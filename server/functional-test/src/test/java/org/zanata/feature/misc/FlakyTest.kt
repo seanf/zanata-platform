@@ -24,7 +24,7 @@ package org.zanata.feature.misc
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Disabled
 import org.zanata.feature.testharness.BasicAcceptanceTest
-import org.zanata.feature.testharness.DetailedTest
+import org.zanata.test.retry.Retry
 
 /**
  * If this test doesn't pass, Failsafe is not retrying failing tests as it should.
@@ -34,18 +34,20 @@ import org.zanata.feature.testharness.DetailedTest
  *
  * @author Sean Flanigan [sflaniga@redhat.com](mailto:sflaniga@redhat.com)
  */
-@DetailedTest
+@BasicAcceptanceTest
 class FlakyTest {
 
-    @BasicAcceptanceTest
-    @Test
-    @Disabled("TODO")
+    @Retry(invocationCount = 2, minSuccess = 1)
     fun testFlaky() {
         if (n++ == 0) {
             throw AssertionError("deliberately flaky test (should pass the next time)")
         }
         assert(true)
     }
+
+    @Test
+    @Disabled
+    fun dummyForIntelliJ() {}
 
     companion object {
         internal var n = 0
